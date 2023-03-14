@@ -6,3 +6,6 @@
 
 [file_servers] 
 35.178.4.211 ansible_user=ubuntu 
+
+[workstations]
+18.130.138.76 ansible_user=ubuntu
