@@ -1,3 +1,8 @@
+[web_servers]
 35.178.79.180 ansible_user=ubuntu
+
+[db_servers]
 18.130.138.76 ansible_user=ubuntu
-35.178.4.211 ansible_user=ubuntu
+
+[file_servers] 
+35.178.4.211 ansible_user=ubuntu 
