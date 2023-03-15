@@ -1,0 +1,96 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: update cache
+    tags: always  
+    apt:
+      update_cache: yes
+    changed_when: false
+    when: ansible_distribution == "Ubuntu"
+
+
+- hosts: all
+  become: true
+  tasks:
+    
+  - name: add ssh key for craig to allow access to servers
+    tags: always
+    authorized_key:
+      user: craig
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMNPeFPlSDKtAYV2QePvkTz6jWqHS59aHqqJn/BRelAd khalid default"
+ 
+    
+- hosts: web_servers
+  become: true 
+  tasks:
+
+  - name: install the apache and php support packages
+    tags: apache,apache2,ubuntu
+    package:
+      name:
+        - apache2
+        - libapache2-mod-php
+      state: latest
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+  
+  - name: start the apache2 service on our ubuntu service so we can view the webpage
+    tags: ubuntu,apache2,apache
+    service:
+      name: apache2
+      state: started
+    when: ansible_distribution == "Ubuntu"
+  
+  - name: copy website file to server
+    tags: apache,apache2,ubuntu
+    copy: 
+      src: default_site.html
+      dest: /var/www/html/index.html
+      owner: root 
+      group: root
+      mode: 0644
+
+- hosts: workstations
+  become: true
+  tasks:
+  
+  - name: install unzip
+    package: 
+      name: unzip
+
+  - name: install terraform
+    unarchive: 
+     src: https://releases.hashicorp.com/terraform/1.4.0/terraform_1.4.0_linux_amd64.zip
+     dest: /usr/local/bin
+     remote_src: yes
+     mode: 0755
+     owner: root
+     group: root
+
+
+
+
+- hosts: db_servers
+  become: true
+  tasks:
+
+  - name: install the PostgreSQL package on our server
+    tags: postgresql,ubuntu,db
+    apt:
+      name: postgresql
+      state: latest
+      update_cache: yes    
+
+
+- hosts: file_servers
+  become: true
+  tasks:
+
+  - name: install samba package
+    tags: samba,ubuntu
+    package: 
+      name: samba
+      state: latest

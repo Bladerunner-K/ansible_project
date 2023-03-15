@@ -1,0 +1,6 @@
+  - name: install the PostgreSQL package on our server
+    tags: postgresql,ubuntu,db
+    apt:
+      name: postgresql
+      state: latest
+      update_cache: yes

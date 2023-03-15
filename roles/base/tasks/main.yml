@@ -1,0 +1,5 @@
+- name: add ssh key for craig to allow access to servers
+  tags: always
+  authorized_key:
+    user: craig
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMNPeFPlSDKtAYV2QePvkTz6jWqHS59aHqqJn/BRelAd   khalid default"
