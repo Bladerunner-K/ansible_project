@@ -4,13 +4,25 @@
   become: true
   tasks:
 
-  - name: install updates
+  - name: update cache
     tags: always  
     apt:
-      upgrade: dist
       update_cache: yes
+    changed_when: false
     when: ansible_distribution == "Ubuntu"
 
+
+- hosts: all
+  become: true
+  tasks:
+    
+  - name: add ssh key for craig to allow access to servers
+    tags: always
+    authorized_key:
+      user: craig
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMNPeFPlSDKtAYV2QePvkTz6jWqHS59aHqqJn/BRelAd khalid default"
+ 
+    
 - hosts: web_servers
   become: true 
   tasks:
@@ -23,6 +35,13 @@
         - libapache2-mod-php
       state: latest
       update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+  
+  - name: start the apache2 service on our ubuntu service so we can view the webpage
+    tags: ubuntu,apache2,apache
+    service:
+      name: apache2
+      state: started
     when: ansible_distribution == "Ubuntu"
   
   - name: copy website file to server
